@@ -34,6 +34,14 @@ function getEmployees(list) {
 document.addEventListener('DOMContentLoaded', () => {
   const list = document.querySelector('ul');
 
-  getEmployees(list);
   sortList(list);
+  getEmployees(list);
 });
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    parseSalary,
+    sortList,
+    getEmployees,
+  };
+}
