@@ -1,46 +1,39 @@
 'use strict';
 
-function sortBySalary() {
-  const employeeList = document.querySelectorAll('li');
-  const employeesArray = Array.from(employeeList);
+function parseSalary(salaryString) {
+  return parseFloat(salaryString.replace(/[^0-9.]/g, ''));
+}
 
-  employeesArray.sort((a, b) => {
-    const salaryA = parseFloat(
-      a.getAttribute('data-salary').replace('$', '').replace(',', ''),
-    );
-    const salaryB = parseFloat(
-      b.getAttribute('data-salary').replace('$', '').replace(',', ''),
-    );
+function sortList(list) {
+  const items = Array.from(list.children);
+
+  items.sort((a, b) => {
+    const salaryA = parseSalary(a.dataset.salary);
+    const salaryB = parseSalary(b.dataset.salary);
 
     return salaryB - salaryA;
   });
 
-  const ul = document.querySelector('ul');
-
-  employeesArray.forEach((employee) => ul.appendChild(employee));
+  items.forEach((item) => list.appendChild(item));
 }
 
-function getEmployeesArray() {
-  const employeeList = document.querySelectorAll('li');
-  const employees = [];
+function getEmployees(list) {
+  return Array.from(list.children).map((item) => {
+    const { position, salary, age } = item.dataset;
+    const employeeName = item.textContent.trim();
 
-  employeeList.forEach((item) => {
-    const employee = {
-      name: item.textContent.trim(),
-      position: item.getAttribute('data-position'),
-      salary: parseFloat(
-        item.getAttribute('data-salary').replace('$', '').replace(',', ''),
-      ),
-      age: Number(item.getAttribute('data-age')),
+    return {
+      name: employeeName,
+      position,
+      salary: parseSalary(salary),
+      age: Number(age),
     };
-
-    employees.push(employee);
   });
-
-  return employees;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  sortBySalary();
-  getEmployeesArray();
+  const list = document.querySelector('ul');
+
+  getEmployees(list);
+  sortList(list);
 });
